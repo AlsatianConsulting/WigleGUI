@@ -1,0 +1,15 @@
+# WiGLE Unified GUI — requirements
+# Note: Tkinter itself is provided by your Python/OS (not via pip).
+
+# Core HTTP client
+requests>=2.31.0,<3
+
+# Map widget (optional but recommended) and its deps
+tkintermapview==1.29
+geocoder>=1.38.1,<2
+pyperclip==1.8.2
+Pillow>=9.0.0
+
+# Build helpers (avoid setup errors when a wheel isn't available)
+setuptools>=68
+wheel>=0.41
