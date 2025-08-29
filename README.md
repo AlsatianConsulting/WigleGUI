@@ -28,14 +28,11 @@ A Tk/Ttk desktop app for searching **WiGLE**’s Wi-Fi, Bluetooth, and Cellular 
 - [Status & Logging](#status--logging)
 - [Troubleshooting](#troubleshooting)
 - [FAQ](#faq)
-- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [Security & Privacy](#security--privacy)
 - [License](#license)
 - [Changelog](#changelog)
 - [Credits](#credits)
-- [Appendix: GitHub Wiki Pages (Ready-to-Copy)](#appendix-github-wiki-pages-ready-to-copy)
-
 ---
 
 ## Features
@@ -64,14 +61,6 @@ A Tk/Ttk desktop app for searching **WiGLE**’s Wi-Fi, Bluetooth, and Cellular 
 ---
 
 ## Screenshots
-
-> _Add your own screenshots here (optional)._
-> Suggested images:
->
-> - `docs/img/main.png` — Main window (tabs visible)
-> - `docs/img/map_bbox.png` — Map with bounding box + “Use View as BBox”
-> - `docs/img/detail.png` — Detail tab after right-click → Detailed Query
-> - `docs/img/exports.png` — Export toggles and resulting files
 
 ---
 
@@ -274,16 +263,6 @@ A: `~/.wigle_gui/credentials.json` on your machine.
 
 ---
 
-## Roadmap
-
-- CLI wrapper for headless batch runs
-- Saved search presets per tab
-- Export profiles (choose columns / KML styles)
-- Map marker clustering and per-result tooltips
-
-> File an issue with your priorities; PRs welcome!
-
----
 
 ## Contributing
 
@@ -303,12 +282,6 @@ Please keep UI strings and filenames consistent with existing conventions.
   Treat this file like a password; do not commit it to version control.
 - Respect WiGLE’s Terms of Service and rate limits.
 - If sharing exports, review them for sensitive location data.
-
----
-
-## License
-
-**MIT** — see `LICENSE` (or replace with your preferred license).
 
 ---
 
