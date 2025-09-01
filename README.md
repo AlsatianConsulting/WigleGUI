@@ -25,6 +25,7 @@ A cross‑platform **Tkinter** app for searching WiGLE (Wi‑Fi, Bluetooth, and 
   - [File/Folder Naming](#filefolder-naming)
 - [Batch Detail Runs](#batch-detail-runs)
 - [Tips, Limits, and Troubleshooting](#tips-limits-and-troubleshooting)
+- [Screenshots](#screenshots)
 - [FAQ](#faq)
 - [Contributing](#contributing)
 - [License](#license)
@@ -204,6 +205,26 @@ aa:bb:cc:dd:ee:ff
 - **CSV headers**: Because headers are the **union** of keys across pages, expect many columns for rich datasets.
 - **KML size**: Large runs → large KMLs. Consider filtering or splitting searches.
 - **macOS SSL**: If you see `certificate verify failed`, run the **Install Certificates.command** (bundled with python.org installs) or install `certifi`.
+
+---
+## Screenshots
+**Bluetooth Basic
+<img width="3964" height="2496" alt="bt-basic" src="https://github.com/user-attachments/assets/03a7b90f-4371-4a5f-87cd-c4d3b8728639" />
+
+**Wifi Basic
+<img width="3964" height="2496" alt="wifi-basic" src="https://github.com/user-attachments/assets/97cb667b-2059-4217-b62a-23e179a5fc4b" />
+
+**Cell Basic
+<img width="3964" height="2496" alt="cell-basic" src="https://github.com/user-attachments/assets/eb08c7bc-5ca2-4f7c-bb70-a05d15335715" />
+
+**BT Detail
+<img width="3964" height="2496" alt="bt-detail" src="https://github.com/user-attachments/assets/0cd06a0c-be1e-44bb-b86e-dd9b3e4c9ac5" />
+
+**Wifi/Cell Detail
+<img width="3964" height="2496" alt="wifi-cell-details" src="https://github.com/user-attachments/assets/9ddd3382-0510-4554-9083-5fd10028a392" />
+
+**MCC-MNC Detail
+<img width="3964" height="2496" alt="MCC-MNC" src="https://github.com/user-attachments/assets/ff91440e-e187-4ae5-9b45-96a095380a19" />
 
 ---
 
