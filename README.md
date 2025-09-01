@@ -208,7 +208,7 @@ aa:bb:cc:dd:ee:ff
 
 ---
 ## Screenshots
-**Bluetooth Basic
+**Bluetooth Basic**
 <img width="3964" height="2496" alt="bt-basic" src="https://github.com/user-attachments/assets/03a7b90f-4371-4a5f-87cd-c4d3b8728639" />
 
 **Wifi Basic**
