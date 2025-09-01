@@ -1,297 +1,248 @@
-# WiGLE Unified GUI — Complete Documentation
+# WiGLE GUI Tool
 
-A Tk/Ttk desktop app for searching **WiGLE**’s Wi-Fi, Bluetooth, and Cellular datasets — with an optional map + bounding-box helper, “Detailed Query” drill-downs, MCC/MNC lookup, and one-click CSV/KML/JSON exports.
+A cross‑platform **Tkinter** app for searching WiGLE (Wi‑Fi, Bluetooth, and Cellular), visualizing results on a map (with a draw‑your‑own bounding box), and exporting **JSON‑driven CSV/KML**. Includes right‑click context menus, “send to detail” shortcuts, batch detail runs from a text file, and an MCC/MNC lookup.
 
-> **Why this tool?**
-> Quickly pivot from broad, map-bounded searches to per-device detail, then export clean CSV/KML generated from the **raw JSON** responses (not just what’s on screen). Designed for repeatable workflows and batch runs.
+> **Why this matters:** All exports are generated from the **raw JSON** responses (not the UI table), so your CSV headers and KML attributes reflect the **full dataset** across paginated pages.
 
 ---
 
 ## Table of Contents
 
 - [Features](#features)
-- [Screenshots](#screenshots)
-- [Requirements](#requirements)
-  - [requirements.txt](#requirementstxt)
-- [Install](#install)
-- [Run](#run)
-- [Credentials](#credentials)
-- [How to Use](#how-to-use)
-  - [Wi-Fi Basic](#wi-fi-basic)
+- [Screens & Tabs](#screens--tabs)
+  - [Wi‑Fi Basic](#wi-fi-basic)
   - [Bluetooth Basic](#bluetooth-basic)
-  - [Cellular Basic](#cellular-basic)
-  - [WiFi/Cell Detail](#wificell-detail)
+  - [Cell Basic](#cell-basic)
+  - [Wi‑Fi/Cell Detail](#wi-ficell-detail)
   - [Bluetooth Detail](#bluetooth-detail)
-  - [MCC–MNC Lookup](#mccmnclookup)
-- [Map & Bounding Box](#map--bounding-box)
-- [Exporting Data](#exporting-data)
-- [Status & Logging](#status--logging)
-- [Troubleshooting](#troubleshooting)
+  - [MCC/MNC Lookup](#mccmnc-lookup)
+  - [Settings](#settings)
+- [Installation](#installation)
+- [Getting WiGLE API Credentials](#getting-wigle-api-credentials)
+- [Running the App](#running-the-app)
+- [Using the Map & Bounding Boxes](#using-the-map--bounding-boxes)
+- [Exports (JSON → CSV/KML)](#exports-json--csvkml)
+  - [File/Folder Naming](#filefolder-naming)
+- [Batch Detail Runs](#batch-detail-runs)
+- [Tips, Limits, and Troubleshooting](#tips-limits-and-troubleshooting)
 - [FAQ](#faq)
 - [Contributing](#contributing)
-- [Security & Privacy](#security--privacy)
 - [License](#license)
-- [Changelog](#changelog)
-- [Credits](#credits)
+
 ---
 
 ## Features
 
-- **Tabbed UI** for:
-  - **Wi-Fi Basic**, **Bluetooth Basic**, **Cellular Basic**
-  - **WiFi/Cell Detail** and **Bluetooth Detail** (single or **Batch** from a text file)
-  - **MCC–MNC Lookup**
-- **Context menu** on Basic search results:
-  - Copy MAC/ID, Copy Name, Copy Lat/Lon
-  - **Detailed Query** → jumps to the right *Detail* tab and pre-fills fields
-- **Optional Map**:
-  - Draw **BBox** (fills `latrange1/2`, `longrange1/2`)
-  - **Use View as BBox**, **Clear BBox**
-  - **Go to Location** via `lat,lon` or a place search (OSM/Nominatim)
-  - OSM / Satellite tiles
-- **Smart Exports** (per tab):
-  - **Full CSV** and **KML** created from the **raw JSON** pages
-  - Optional **JSON** (merged where applicable)
-  - If JSON export is **off**, temporary page JSONs are cleaned after export
-- **Pagination**:
-  - Automatic `searchAfter` until all pages are fetched
-- **Transparent logging**:
-  - Status pane shows **Submitted** URL, per-page saves, **Total in DB**, and **Search complete**
+- **Wi‑Fi / Bluetooth / Cell** basic searches with form fields, country dropdowns, and **map bounding‑box** tools.
+- **Right‑click context menu** on results: copy ID/Name/Lat/Lon, or “**Send to Detail**” (auto‑fills detail tab).
+- **Detail tabs** for Wi‑Fi/Cell and Bluetooth with **batch file** processing (`Browse…` to load a text file).
+- **Exports from raw JSON**:
+  - Toggle **JSON / CSV / KML** independently.
+  - CSV headers are the **union** of all keys across pages.
+  - KML includes **ExtendedData** attributes for all keys.
+- **Automatic pagination** using `searchAfter` (when supported by the WiGLE endpoint).
+- **Per‑run output folders** with clean, consistent filenames.
+- **MCC/MNC lookup** with normalization and CSV export.
+- **Credential manager** (Settings → WiGLE Credentials) stores your API username/token in a local JSON file.
+- **Dark‑mode friendly** layout and status pane.
 
 ---
 
-## Screenshots
+## Screens & Tabs
+
+### Wi‑Fi Basic
+- Form inputs for SSID/BSSID filters, country, and optional bounding box (map).
+- Results table with right‑click copy and “Send to Detail” to pre‑fill the **Wi‑Fi/Cell Detail** tab.
+- Export toggles (JSON/CSV/KML) affect this tab’s searches.
+
+### Bluetooth Basic
+- Search for Bluetooth devices by name/MAC (and country if supported).
+- Right‑click results to copy values or “Send to Detail” (Bluetooth Detail tab).
+
+### Cell Basic
+- Search cellular towers/operators with MCC/MNC filters and **country** limit.
+- Supports `searchAfter` pagination when available.
+- Right‑click → copy → send to detail.
+
+### Wi‑Fi/Cell Detail
+- Single or **batch** detail lookups.
+- **Browse…** to import a text file of IDs (e.g., BSSIDs, network IDs) and run them sequentially.
+- Per‑run folder creation; all exports pulled from **JSON**, not the UI table.
+
+### Bluetooth Detail
+- Single or **batch** Bluetooth detail lookups.
+- Mirrors the behavior of the Wi‑Fi/Cell Detail tab for batch processing and exports.
+
+### MCC/MNC Lookup
+- Enter MCC or MCC/MNC (wildcards supported where relevant).
+- Normalizes common formats (e.g., `mccmnc` vs `mcc-mnc`) and exports results to CSV.
+
+### Settings
+- **WiGLE Credentials**: store API username and token into `~/.wigle_gui/credentials.json`.
+- **Export Options**: toggle JSON, CSV, KML behavior (e.g., keep JSON pages, remove after CSV/KML, etc.).
+- **Paths**: choose default output directory.
 
 ---
 
-## Requirements
+## Installation
 
-- **Python 3.8+**
-- A working **Tk** runtime (Linux: `sudo apt install python3-tk`)
-- Third-party packages listed in **`requirements.txt`**
+> Works on **Windows**, **macOS**, and **Linux** with Python **3.10+**.
 
-### requirements.txt
+1. **Clone** this repository:
+   ```bash
+   git clone https://github.com/<your-org>/<your-repo>.git
+   cd <your-repo>
+   ```
 
-```txt
-# Core
-requests>=2.31.0,<3
+2. **Create & activate a virtualenv** (recommended):
+   ```bash
+   python -m venv .venv
+   # Windows
+   .venv\Scripts\activate
+   # macOS/Linux
+   source .venv/bin/activate
+   ```
 
-# Optional map widget (safe to remove if you don’t want map features)
-tkintermapview==1.29
-pillow>=10.0.0
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# Pin to avoid occasional build/metadata hiccups pulled via tkintermapview -> geocoder
-geocoder==1.38.1
-pyperclip==1.8.2
-```
-
-> **Disable the map**: If you prefer not to install GUI map deps, remove/comment the last four lines above and reinstall.
-
----
-
-## Install
-
-```bash
-# 1) Create & activate a virtual environment
-python3 -m venv .venv
-# Windows:
-# .venv\Scripts\activate
-# macOS/Linux:
-source .venv/bin/activate
-
-# 2) Install dependencies
-pip install -r requirements.txt
-```
-
-> **Linux note**: If you see Tk errors, install Tk: `sudo apt install python3-tk`.
+4. **OS notes**:
+   - **Windows:** no extra steps typically required.
+   - **macOS:** if you see SSL/cert errors with Tkinter/requests, run the “Install Certificates.command” that ships with python.org builds, or `pip install certifi`.
+   - **Linux (Debian/Ubuntu):** ensure Tk is available:
+     ```bash
+     sudo apt-get update
+     sudo apt-get install -y python3-tk
+     ```
 
 ---
 
-## Run
+## Getting WiGLE API Credentials
+
+1. Log into your WiGLE account and generate an API token.
+2. In the app, open **Settings → WiGLE Credentials**.
+3. Enter your **username** and **API token**; they’re stored locally at:
+   ```
+   ~/.wigle_gui/credentials.json
+   ```
+   > You can edit or delete this file anytime.
+
+---
+
+## Running the App
 
 ```bash
 python wigleGUI.py
 ```
 
-- The application opens on **BT Basic**.
-- If credentials aren’t set yet, you’ll be prompted to add them (see next section).
+- The main window opens in **dark‑mode friendly** colors.
+- Pick a tab, set filters, draw a **bounding box** if needed, and click **Search**.
+- Watch the **Status** pane for progress, page counts, and export info.
 
 ---
 
-## Credentials
+## Using the Map & Bounding Boxes
 
-The app uses WiGLE’s API:
-
-1. Open **`Settings → WiGLE Credentials…`**
-2. Enter:
-   - **WiGLE Username / API Name**
-   - **WiGLE API Token** (password)
-3. Credentials are stored locally at:
-   - **`~/.wigle_gui/credentials.json`**
-
-> You can update these at any time via the same menu.
+- **Pan/Zoom** the map to your area of interest.
+- Use the **draw rectangle** tool to set the bounding box.
+- The app will apply the rectangle’s **min/max lat/lon** to supported searches.
+- Clear or redraw the box to adjust your search area.
 
 ---
 
-## How to Use
+## Exports (JSON → CSV/KML)
 
-Below is a high-level user guide. For a step-by-step guide per tab (with more screenshots), see the project Wiki or the wiki pages included in this zip.
+- Enable **JSON**, **CSV**, and/or **KML** via the export toggles (top/right or Settings).
+- The app always works from the **raw JSON pages**:
+  - **CSV**: builds a **union** of keys across all pages so no fields are lost.
+  - **KML**: puts all key/value pairs into **ExtendedData** (click a placemark to view attributes).
+- JSON pages can be **kept** for auditing or **removed** automatically after CSV/KML generation (your choice in Settings).
 
-### Wi-Fi Basic
+### File/Folder Naming
 
-- **Endpoint**: `network/search`
-- **Typical fields**:
-  Ownership (`onlymine`, `notmine`), time windows (`firsttime`, `lasttime`, `lastupdt`), network filters (`netid`/BSSID, `ssid`, `ssidlike`), encryption flags, location (`latrange1/2`, `longrange1/2`, or `closestLat/closestLong`), address components, pagination (`resultsPerPage`, `searchAfter`), etc.
-- **Country** combobox starts **blank**. Use **Clear Params/All** to reset.
-- **Results columns**: **BSSID**, **SSID**, **Last Updated**, **Lat**, **Lon**
-- **Right-click** any row → Copy actions or **Detailed Query** (opens WiFi/Cell Detail with fields pre-filled).
+Each run creates a clearly‑named output folder with a unique token:
 
-### Bluetooth Basic
+```
+<output-root>/
+  wifi-basic-<timestamp-or-id>/
+    wifi-basic-<id>-page_1.json
+    wifi-basic-<id>-page_2.json
+    wifi-basic-<id>.csv
+    wifi-basic-<id>.kml
+```
 
-- **Endpoint**: `bluetooth/search`
-- **Fields**: Similar to Wi-Fi (location + time windows + pagination) plus BT-specific (`netid`, `name`, `namelike`).
-- **Results columns**: **BTID**, **Name**, **Last Updated**, **Lat**, **Lon**
-- Right-click → **Detailed Query** (opens **Bluetooth Detail**).
-
-### Cellular Basic
-
-- **Endpoint**: `cell/search`
-- **Fields**: `cell_op` (operator), `cell_net`, `cell_id`, and generation flags (`showGsm`, `showCdma`, `showLte`, `showWcdma`, `showNr`), plus generic location/time/pagination fields.
-- **Results columns**: **ID** (`OP_LAC_CID`), **Name**, **GenType**, **Lat**, **Lon**
-- Right-click → **Detailed Query** (opens **WiFi/Cell Detail** and auto-fills `operator`, `lac`, `cid`).
-
-### WiFi/Cell Detail
-
-- **Wi-Fi** detail by **`netid`** (BSSID).
-- **Cell** detail by **`operator` / `lac` / `cid`** (also supports `system`, `network`, `basestation`).
-- **Batch mode**: Provide a text file (one ID per line). Each runs as its own detail request.
-- **Exports**: CSV/KML from merged/raw JSON; optional JSON kept if you enable **Export JSON**.
-
-### Bluetooth Detail
-
-- Provide a **BT `netid`** (or right-click → **Detailed Query** from Bluetooth Basic).
-- **Batch mode** supported (text file, one `netid` per line).
-- **Exports** behave like WiFi/Cell Detail.
-
-### MCC–MNC Lookup
-
-- **Endpoint**: `cell/mccMnc`
-- Enter **MCC** and/or **MNC**; see **Country**, **Brand**, **Operator**, **Bands**, **Notes**.
-- Click **Export Results CSV** to save the table.
+The same convention is used for **bluetooth-basic**, **cell-basic**, and the **detail** tabs.
 
 ---
 
-## Map & Bounding Box
+## Batch Detail Runs
 
-> The map is optional — the rest of the app works without it.
+- In **Wi‑Fi/Cell Detail** or **Bluetooth Detail**, click **Browse…** to select a text file.
+- Provide one identifier **per line** (e.g., BSSID, network ID, BT MAC).
+- The app runs them sequentially, writes per‑run exports, and shows a final summary dialog (e.g., “Created X CSVs / Y KMLs”).
+- The selected file path is displayed under the input to make it obvious which batch is running.
 
-- **BBox**:
-  - Click **BBox**, then click two corners on the map; the app fills `latrange1/2` and `longrange1/2`.
-  - **Use View as BBox** converts the current viewport into the four range fields.
-  - **Clear BBox** resets range fields and removes the shape.
-- **Go to Location**:
-  - Enter `lat,lon` (e.g., `37.7749,-122.4194`) **or** a place name/address (geocoded via OSM Nominatim).
-  - The map pans/zooms to the result.
-- **Tiles**: OSM and Satellite views available.
-
----
-
-## Exporting Data
-
-Exports are **per tab** and controlled via toggle buttons:
-
-- **Full CSV** and **KML** are generated from the **raw JSON** pages (not just the visible table).
-- **Export JSON**:
-  - **ON** → keeps (or merges) the JSON pages.
-  - **OFF** → the app **cleans** temporary page JSONs after CSV/KML are created.
-
-### Detail Exports (flattened)
-
-- **CSV** flattens each entry’s `locationData/locations`, adding lat/lon/time.
-- **KML** writes a Placemark per location point.
-
-### Filenames (convention)
-
-- **Basic**: `wifi-basic-<runTag>.csv/.kml` (similar for BT/Cell)
-- **Detail**: `<basename>.csv/.kml` + optional `<basename>.json`
+**Batch file example**:
+```
+aa:bb:cc:dd:ee:ff
+11:22:33:44:55:66
+77:88:99:aa:bb:cc
+```
 
 ---
 
-## Status & Logging
+## Tips, Limits, and Troubleshooting
 
-The **Status** pane records:
-
-- **Submitted:** full request URL (useful for auditing/replays)
-- Per-page saves: `Page N: X results saved: …/page_N.json`
-- **Total in DB** (when present in API response)
-- **Search complete** (with counts)
-- **Temporary JSON pages removed:** count & path when cleanup occurs
-
-> Use this area to confirm parameters, pagination progress, and where files were written.
-
----
-
-## Troubleshooting
-
-- **Map not visible**
-  Install the map deps: `pip install tkintermapview pillow geocoder pyperclip`
-  (Linux may also need Tk: `sudo apt install python3-tk`.)
-- **401 / auth errors**
-  Re-enter credentials at **Settings → WiGLE Credentials…** (username/API name + API token).
-- **Empty CSV/KML**
-  Ensure your results actually contain coordinates; recheck BBox/country/time filters.
-- **“Where did the JSON files go?”**
-  If **Export JSON** is **off**, temporary page JSONs are **deleted** after CSV/KML are written.
-- **No results but you expect some**
-  Verify **country** (starts blank), date windows, BBox, and pagination (`resultsPerPage`/`searchAfter`).
+- **Rate limits**: WiGLE enforces request limits—use bounding boxes and filters to scope queries.
+- **Zero results**:
+  - Check your filters (country, tech type, bbox).
+  - Try a larger bounding box or fewer filters.
+- **Pagination**: The app uses `searchAfter` (when available) to pull all pages automatically.
+- **Map tiles**: If tiles don’t load, verify you have internet access or a permissive network.
+- **CSV headers**: Because headers are the **union** of keys across pages, expect many columns for rich datasets.
+- **KML size**: Large runs → large KMLs. Consider filtering or splitting searches.
+- **macOS SSL**: If you see `certificate verify failed`, run the **Install Certificates.command** (bundled with python.org installs) or install `certifi`.
 
 ---
 
 ## FAQ
 
-**Q: Do I need the map?**
-A: No. The app runs fine without it. You can still type lat/long ranges directly.
+**Q: Where are my WiGLE credentials stored?**  
+A: In a local JSON file at `~/.wigle_gui/credentials.json`. You can edit or delete it anytime.
 
-**Q: Are exports only what I see on screen?**
-A: No. CSV/KML are generated from the **raw JSON** results collected during the run.
+**Q: Why export from JSON instead of the table I see on screen?**  
+A: The UI table may truncate or omit fields. Exporting from raw JSON guarantees you capture **all** available fields from each page, which become CSV columns and KML attributes.
 
-**Q: Can I run multiple IDs at once for Detail queries?**
-A: Yes. Use **Batch** with a text file (one ID per line).
+**Q: Can I keep the JSON pages for auditing?**  
+A: Yes. In **Settings**, enable “Keep JSON pages after export”. Otherwise, pages are deleted after CSV/KML are generated.
 
-**Q: Where are credentials stored?**
-A: `~/.wigle_gui/credentials.json` on your machine.
+**Q: How do batch runs work?**  
+A: Prepare a text file with one ID per line (BSSID, network ID, or BT MAC). Use **Browse…** on the Detail tab to select it. The app iterates through each, exporting JSON/CSV/KML per run and shows a final count dialog.
+
+**Q: I’m seeing newline characters (`\\n`) in the Status pane—what gives?**  
+A: The Status pane shows raw progress strings. Exports are unaffected. If you prefer cleaner status text, reduce verbosity in Settings or clear between runs; we trim common newline artifacts in recent builds.
+
+**Q: Will this exceed WiGLE rate limits?**  
+A: It tries to be polite, but large batch/detail jobs can hit limits. Use country/bounding box filters and consider pausing between runs if needed.
+
+**Q: Does the map work offline?**  
+A: Map tiles require internet. You can still run searches and exports without tiles, but drawing a bbox needs the map to be visible.
+
+**Q: My KML won’t open in Google Earth—file is huge.**  
+A: Very large datasets produce very large KMLs. Try filtering more narrowly or splitting the run.
 
 ---
-
 
 ## Contributing
 
-1. Fork the repo
-2. Create a feature branch: `git checkout -b feat/your-idea`
-3. Commit: `git commit -m "Add awesome thing"`
-4. Push: `git push origin feat/your-idea`
-5. Open a Pull Request
-
-Please keep UI strings and filenames consistent with existing conventions.
+Issues and PRs are welcome! Please include:
+- OS and Python version
+- Steps to reproduce (inputs, tab, filters)
+- Logs from the Status pane (copy/paste) and any stack traces
 
 ---
 
-## Security & Privacy
-
-- Your WiGLE credentials are stored locally in `~/.wigle_gui/credentials.json`.
-  Treat this file like a password; do not commit it to version control.
-- Respect WiGLE’s Terms of Service and rate limits.
-- If sharing exports, review them for sensitive location data.
-
----
-
-## Changelog
-
-- **v0.1.0** – Initial public release
-
----
-
-## Credits
-
-- Built with Python, Tk/Ttk, and optionally `tkintermapview` for mapping.
-- Thanks to the WiGLE community for their datasets and API.
+## License
+ Apache-2.0
